@@ -6,13 +6,13 @@
     "indent_size": 4,
     "state_var": "_cellularState",
     "entropy_var": "_entropy",
-    "comment_prefix": "// ",
+    "comment_prefix": "//",
     "max_recursion_depth": 6,
     "distillation_blend_prob": 0.15,
     "oscillation_period": 3,
     "quine_depth": 2,
     "plasmid_dir": "./plasmids",
-    "operon_prefix": "OP_"
+    "operon_prefix": "OP"
   },
   "operons": [
     {
@@ -49,7 +49,7 @@
   "proteins": [
     {
       "id": "initialize",
-      "filename": "initialize.prot",
+      "filename": "initialize.cs",
       "extends": null,
       "description": "Point d'entrée cellulaire. Boucle étrange d'auto-observation + quine.",
       "template": [
@@ -73,7 +73,9 @@
         "    {{self_ref:log_init}}",
         "}"
       ],
-      "variables": { "base_state": 5 },
+      "variables": {
+        "base_state": 5
+      },
       "meta": {
         "docstring": "/// <summary>\n/// Initialisation cellulaire. Je suis le point d'entrée qui s'observe entrant.\n/// La boucle se referme: ce code imprime sa propre représentation.\n/// </summary>",
         "philosophy": "Je démarre en sachant que j'ai démarré. C'est une boucle qui se ferme sur elle-même.",
@@ -95,7 +97,7 @@
     },
     {
       "id": "phenylalanine",
-      "filename": "phenylalanine.prot",
+      "filename": "phenylalanine.cs",
       "extends": null,
       "description": "Traitement hydrophobe. Émergence par voisinage local.",
       "template": [
@@ -104,11 +106,11 @@
         "    {{comment}} Traitement des données hydrophobes...",
         "    {{operon_check:OP_GROWTH}}",
         "    {{repeat:3}}",
-        "        double local_{{loop_var}} = {{entropy}}.NextDouble() * {{state_var}};",
+        "        double local{{loop_var}} = {{entropy}}.NextDouble() * {{state_var}};",
         "        {{ca_state:B23/S3}}",
-        "        {{if: local_{{loop_var}} > 0.5}}",
+        "        {{if: local{{loop_var}} > 0.5}}",
         "            {{state_var}} += 1;",
-        "        {{elif: local_{{loop_var}} < 0.2}}",
+        "        {{elif: local{{loop_var}} < 0.2}}",
         "            {{state_var}} = Math.Max(0, {{state_var}} - 1);",
         "        {{else}}",
         "            {{comment}} Équilibre thermodynamique atteint",
@@ -131,14 +133,14 @@
       },
       "conway_rules": {
         "B23/S3": [
-          "if (local_{{loop_var}} > 0.3 && local_{{loop_var}} < 0.7) {{state_var}} += 0.5;"
+          "if (local{{loop_var}} > 0.3 && local{{loop_var}} < 0.7) {{state_var}} += 0.5;"
         ]
       },
       "epigenetic_markers": []
     },
     {
       "id": "analyze",
-      "filename": "analyze.prot",
+      "filename": "analyze.cs",
       "extends": null,
       "description": "Analyse récursive avec distillation, transposon et oscillation.",
       "template": [
@@ -156,7 +158,9 @@
         "    {{self_ref:deep_insight}}",
         "}"
       ],
-      "variables": { "state_var": "{{global:state_var}}" },
+      "variables": {
+        "state_var": "{{global:state_var}}"
+      },
       "meta": {
         "docstring": "/// <summary>\n/// Analyse récursive. Le processus s'observe analysant.\n/// Transposon TP_AMPLIFY peut se déplacer dans le génome.\n/// </summary>",
         "weight": 0.9,
@@ -178,7 +182,7 @@
     },
     {
       "id": "heatshock",
-      "filename": "heatshock.prot",
+      "filename": "heatshock.cs",
       "extends": "initialize",
       "override": {
         "meta.philosophy": "Je m'auto-répare sous stress thermique. La chaleur est mon signal.",
@@ -206,7 +210,7 @@
     },
     {
       "id": "repair",
-      "filename": "repair.prot",
+      "filename": "repair.cs",
       "extends": null,
       "description": "Mécanisme de réparation de l'ADN. Corrige les mutations délétères.",
       "template": [

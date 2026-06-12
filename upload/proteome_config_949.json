@@ -2,19 +2,18 @@
   "schema_version": "2.1.0",
   "project": "StrangeLoopCellularProteome_UltraExtended",
   "description": "Protéome cellulaire complet. 18 protéines, 6 opérons, 5 plasmides, 4 transposons globaux. Couvre le cycle cellulaire complet : naissance, homéostasie, stress, réplication, apoptose, mémoire épigénétique et auto-réflexion.",
-
   "global": {
     "language": "csharp",
     "indent_size": 4,
     "state_var": "_cellularState",
     "entropy_var": "_entropy",
-    "comment_prefix": "// ",
+    "comment_prefix": "//",
     "max_recursion_depth": 8,
     "distillation_blend_prob": 0.12,
     "oscillation_period": 4,
     "quine_depth": 3,
     "plasmid_dir": "./plasmids",
-    "operon_prefix": "OP_",
+    "operon_prefix": "OP",
     "epigenetic_memory_slots": 16,
     "mitosis_threshold": 12,
     "apoptosis_threshold": 0,
@@ -22,7 +21,6 @@
     "mutation_rate": 0.03,
     "cell_generation": 0
   },
-
   "operons": [
     {
       "id": "OP_STRESS",
@@ -67,7 +65,6 @@
       "repressor": null
     }
   ],
-
   "plasmids": [
     {
       "id": "PLM_LOGGER",
@@ -136,7 +133,6 @@
       ]
     }
   ],
-
   "global_transposons": [
     {
       "id": "TP_AMPLIFY",
@@ -163,12 +159,10 @@
       "effect": "_cellularState = Math.Max(0, _cellularState % 2 == 0 ? _cellularState - 2 : _cellularState + 2); Console.WriteLine(\"[TP_INVERSION] Inversion régulatoire.\");"
     }
   ],
-
   "proteins": [
-
     {
       "id": "initialize",
-      "filename": "initialize.prot",
+      "filename": "initialize.cs",
       "extends": null,
       "description": "Point d'entrée cellulaire. Auto-observation récursive, quine, oscillation et plasmide watchdog.",
       "template": [
@@ -206,7 +200,9 @@
         "    {{self_ref:validate_membranes}}",
         "}"
       ],
-      "variables": { "base_state": 5 },
+      "variables": {
+        "base_state": 5
+      },
       "meta": {
         "docstring": "/// <summary>\n/// Initialisation cellulaire. Je suis le point d'entrée qui s'observe entrant.\n/// La boucle se referme : ce code connaît son propre démarrage.\n/// </summary>",
         "philosophy_high": "Je démarre avec surplus d'énergie. La boucle est turgescente.",
@@ -233,10 +229,9 @@
       },
       "epigenetic_markers": ["h3k4me3_promoter", "h3k27ac_enhancer"]
     },
-
     {
       "id": "phenylalanine",
-      "filename": "phenylalanine.prot",
+      "filename": "phenylalanine.cs",
       "extends": null,
       "description": "Acide aminé hydrophobe. Émergence par voisinage local. Régulé par OP_GROWTH.",
       "template": [
@@ -288,10 +283,9 @@
       },
       "epigenetic_markers": []
     },
-
     {
       "id": "analyze",
-      "filename": "analyze.prot",
+      "filename": "analyze.cs",
       "extends": null,
       "description": "Analyse récursive avec distillation stochastique, transposon et oscillation profonde.",
       "template": [
@@ -331,7 +325,7 @@
         "weight": 0.9,
         "expression_level": 1.3,
         "cell_phase": "G2"
-      },
+        },
       "sub_proteins": {
         "deep_insight": [
           "    if (value > _cellularState * 0.8) {",
@@ -353,10 +347,9 @@
       },
       "epigenetic_markers": ["h3k36me3_transcribed"]
     },
-
     {
       "id": "heatshock",
-      "filename": "heatshock.prot",
+      "filename": "heatshock.cs",
       "extends": "initialize",
       "override": {
         "meta.philosophy_high": "Je m'auto-répare sous stress thermique. La chaleur est mon signal de transformation.",
@@ -395,10 +388,9 @@
       },
       "epigenetic_markers": ["h3k9me3_stress_silenced"]
     },
-
     {
       "id": "repair",
-      "filename": "repair.prot",
+      "filename": "repair.cs",
       "extends": null,
       "description": "Mécanisme de réparation de l'ADN. NER (Nucleotide Excision Repair) et BER simulés.",
       "template": [
@@ -436,10 +428,9 @@
       },
       "epigenetic_markers": []
     },
-
     {
       "id": "dna_polymerase",
-      "filename": "dna_polymerase.prot",
+      "filename": "dna_polymerase.cs",
       "extends": null,
       "description": "Réplication de l'ADN. Processivité, fidélité, correction d'épreuves.",
       "template": [
@@ -480,10 +471,9 @@
       },
       "epigenetic_markers": ["pcna_sliding_clamp"]
     },
-
     {
       "id": "chromatin_condenser",
-      "filename": "chromatin_condenser.prot",
+      "filename": "chromatin_condenser.cs",
       "extends": null,
       "description": "Condensation de la chromatine pour la mitose. Histones H1, condensines.",
       "template": [
@@ -515,10 +505,9 @@
       },
       "epigenetic_markers": ["h3s10ph_mitotic", "h4k20me1"]
     },
-
     {
       "id": "spindle_assembly",
-      "filename": "spindle_assembly.prot",
+      "filename": "spindle_assembly.cs",
       "extends": null,
       "description": "Assemblage du fuseau mitotique. Kinétochores, kinésines, dynéines.",
       "template": [
@@ -557,10 +546,9 @@
       },
       "epigenetic_markers": []
     },
-
     {
       "id": "caspase_cascade",
-      "filename": "caspase_cascade.prot",
+      "filename": "caspase_cascade.cs",
       "extends": null,
       "description": "Cascade de caspases. Apoptose intrinsèque (mitochondriale) et extrinsèque.",
       "template": [
@@ -596,10 +584,9 @@
       },
       "epigenetic_markers": ["h2ax_dna_damage"]
     },
-
     {
       "id": "dna_fragmentation",
-      "filename": "dna_fragmentation.prot",
+      "filename": "dna_fragmentation.cs",
       "extends": "caspase_cascade",
       "override": {
         "meta.cell_phase": "apoptosis_late",
@@ -630,10 +617,9 @@
       },
       "epigenetic_markers": ["h2ax_dna_damage", "h3k9me3_silenced"]
     },
-
     {
       "id": "clock_gene",
-      "filename": "clock_gene.prot",
+      "filename": "clock_gene.cs",
       "extends": null,
       "description": "Gène CLOCK. Oscillateur circadien moléculaire. Boucle de rétroaction CLOCK/BMAL1.",
       "template": [
@@ -667,10 +653,9 @@
       },
       "epigenetic_markers": ["clock_bmal1_acetylation"]
     },
-
     {
       "id": "period_gene",
-      "filename": "period_gene.prot",
+      "filename": "period_gene.cs",
       "extends": "clock_gene",
       "override": {
         "meta.cell_phase": "G1_late",
@@ -702,10 +687,9 @@
       },
       "epigenetic_markers": ["per_cry_phosphorylation"]
     },
-
     {
       "id": "histone_methylase",
-      "filename": "histone_methylase.prot",
+      "filename": "histone_methylase.cs",
       "extends": null,
       "description": "Méthylation des histones. EZH2 (H3K27me3), G9a (H3K9me2). Mémoire épigénétique.",
       "template": [
@@ -723,7 +707,7 @@
         "            _epigeneticMemory[$\"silenced_region_{{{loop_var}}}\"] = _cellGeneration;",
         "            {{state_var}} = Math.Max(1, {{state_var}} - 1);",
         "        } else if (_targetMark == \"H3K4me3\") {",
-        "            Console.WriteLine($\"[HMT] Activation promoteur. Transcription facilitée.\");",
+        "            Console.WriteLine(\"[HMT] Activation promoteur. Transcription facilitée.\");",
         "            {{state_var}} += 1;",
         "        }",
         "    {{endrepeat}}",
@@ -739,10 +723,9 @@
       },
       "epigenetic_markers": ["ezh2_prc2_complex"]
     },
-
     {
       "id": "chromatin_remodeler",
-      "filename": "chromatin_remodeler.prot",
+      "filename": "chromatin_remodeler.cs",
       "extends": "histone_methylase",
       "override": {
         "meta.expression_level": 0.9,
@@ -779,10 +762,9 @@
       },
       "epigenetic_markers": ["swi_snf_brg1"]
     },
-
     {
       "id": "ribosome_biogenesis",
-      "filename": "ribosome_biogenesis.prot",
+      "filename": "ribosome_biogenesis.cs",
       "extends": null,
       "description": "Biogenèse ribosomale. ARNr 28S/18S/5.8S, assemblage, export nucléaire.",
       "template": [
@@ -817,10 +799,9 @@
       },
       "epigenetic_markers": ["rna_pol1_active"]
     },
-
     {
       "id": "autophagy",
-      "filename": "autophagy.prot",
+      "filename": "autophagy.cs",
       "extends": null,
       "description": "Autophagie. ULK1/ATG13, phagophore, autolysosome. Recyclage des organelles.",
       "template": [
@@ -857,10 +838,9 @@
       },
       "epigenetic_markers": []
     },
-
     {
       "id": "telomerase",
-      "filename": "telomerase.prot",
+      "filename": "telomerase.cs",
       "extends": null,
       "description": "Télomérase (TERT + TR). Allongement des télomères. Immortalisation cellulaire.",
       "template": [
@@ -897,10 +877,9 @@
       },
       "epigenetic_markers": ["tert_promoter_mutation"]
     },
-
     {
       "id": "strange_loop",
-      "filename": "strange_loop.prot",
+      "filename": "strange_loop.cs",
       "extends": null,
       "description": "Boucle étrange hofstadterienne. Se référence elle-même, imprime son propre code, s'analyse.",
       "template": [
@@ -944,6 +923,5 @@
       },
       "epigenetic_markers": ["self_referential_mark"]
     }
-
   ]
 }

@@ -1,20 +1,19 @@
 {
   "schema_version": "3.0.0",
   "project": "BioDigital_Proteome_SystemFunctions",
-  "description": "Protéome cellulaire numérique intégrant des fonctions système standard (Affichage, Fichier, Crypto, Réseau, Applications) dans une métaphore bio-inspirée. Chaque fonction est une protéine avec cycle cellulaire, mémoire épigénétique et interactions métaboliques.",
-
+  "description": "Protéome cellulaire numérique intégrant des fonctions système standard (Affichage, Fichier, Crypto, Réseau, Applications) dans une métaphore bio-inspirée.",
   "global": {
     "language": "csharp",
     "indent_size": 4,
     "state_var": "_cellularState",
     "entropy_var": "_entropy",
-    "comment_prefix": "// ",
+    "comment_prefix": "//",
     "max_recursion_depth": 8,
     "distillation_blend_prob": 0.12,
     "oscillation_period": 4,
     "quine_depth": 3,
     "plasmid_dir": "./plasmids",
-    "operon_prefix": "OP_",
+    "operon_prefix": "OP",
     "epigenetic_memory_slots": 16,
     "mitosis_threshold": 12,
     "apoptosis_threshold": 0,
@@ -25,7 +24,6 @@
     "crypto_key_size": 256,
     "network_timeout_ms": 5000
   },
-
   "operons": [
     {
       "id": "OP_IO",
@@ -70,7 +68,6 @@
       "repressor": null
     }
   ],
-
   "plasmids": [
     {
       "id": "PLM_BUFFER",
@@ -128,7 +125,6 @@
       ]
     }
   ],
-
   "global_transposons": [
     {
       "id": "TP_BUFFER_OVERFLOW",
@@ -155,11 +151,10 @@
       "effect": "Console.WriteLine(\"[TP_OPTIMIZE] Optimisation détectée! Gain d'état.\"); _cellularState += 1;"
     }
   ],
-
   "proteins": [
     {
       "id": "initialize",
-      "filename": "initialize.prot",
+      "filename": "initialize.cs",
       "extends": null,
       "description": "Initialisation du système cellulaire numérique. Définit l'environnement d'exécution.",
       "template": [
@@ -181,7 +176,9 @@
         "    {{self_ref:validate_system}}",
         "}"
       ],
-      "variables": { "base_state": 5 },
+      "variables": {
+        "base_state": 5
+      },
       "meta": {
         "docstring": "/// <summary>\n/// Initialisation système. Métaphore de boot cellulaire.\n/// Charge les plasmides, initialise les organelles système.\n/// </summary>",
         "philosophy_high": "Démarrage haute performance. Tous les sous-systèmes sont turgescents.",
@@ -205,10 +202,9 @@
       },
       "epigenetic_markers": ["boot_sequence", "system_ready"]
     },
-
     {
       "id": "display",
-      "filename": "display.prot",
+      "filename": "display.cs",
       "extends": null,
       "description": "Protéine d'affichage. Gère la sortie console, le rendu et les buffers d'écran.",
       "template": [
@@ -245,10 +241,9 @@
       },
       "epigenetic_markers": ["display_buffer", "console_active"]
     },
-
     {
       "id": "file_system",
-      "filename": "file_system.prot",
+      "filename": "file_system.cs",
       "extends": null,
       "description": "Protéine système de fichiers. Lecture, écriture, métadonnées.",
       "template": [
@@ -279,17 +274,16 @@
         "}"
       ],
       "meta": {
-        "docstring": "/// <summary>\n/// File System protein. Lecture/écriture avec sandbox.\n/// Mainient une mémoire des accès récents (épigénétique).\n/// </summary>",
+        "docstring": "/// <summary>\n/// File System protein. Lecture/écriture avec sandbox.\n/// Maintient une mémoire des accès récents (épigénétique).\n/// </summary>",
         "weight": 1.8,
         "expression_level": 0.8,
         "cell_phase": "S"
       },
       "epigenetic_markers": ["file_access_log", "sandbox_state"]
     },
-
     {
       "id": "crypto_core",
-      "filename": "crypto_core.prot",
+      "filename": "crypto_core.cs",
       "extends": null,
       "description": "Cœur cryptographique. Chiffrement symétrique/asymétrique, gestion de clés.",
       "template": [
@@ -305,7 +299,7 @@
         "        _epigeneticMemory[\"last_encryption\"] = _cellGeneration;",
         "        {{state_var}} += 2;",
         "    {{elif: mode == \"decrypt\"}}",
-        "        Console.WriteLine($\"[CRYPTO] Déchiffrement en cours\");",
+        "        Console.WriteLine(\"[CRYPTO] Déchiffrement en cours\");",
         "        output = input;",
         "        {{state_var}} += 1;",
         "    {{elif: mode == \"keygen\"}}",
@@ -328,10 +322,9 @@
       },
       "epigenetic_markers": ["aes_active", "key_derived"]
     },
-
     {
       "id": "hash_function",
-      "filename": "hash_function.prot",
+      "filename": "hash_function.cs",
       "extends": "crypto_core",
       "override": {
         "meta.cell_phase": "S_checkpoint",
@@ -361,10 +354,9 @@
       },
       "epigenetic_markers": ["hmac_keyed", "salting_active"]
     },
-
     {
       "id": "random_generator",
-      "filename": "random_generator.prot",
+      "filename": "random_generator.cs",
       "extends": null,
       "description": "Générateur de nombres aléatoires cryptographiquement sûr.",
       "template": [
@@ -376,7 +368,7 @@
         "    {{if: cryptoSafe}}",
         "        {{comment}} Utilisation de l'entropie cellulaire",
         "        _value = _entropy.Next(min, max);",
-        "        _epigeneticMemory[\"crypto_entropy\"] = (_epigeneticMemory.GetValueOrDefault(\"crypto_entropy\") + 1) % 256;",
+        "        _epigeneticMemory[\"crypto_entropy\"] = (_epigeneticMemory.GetValueOrDefault(\"crypto_entropy\", 0) + 1) % 256;",
         "        Console.WriteLine($\"[RNG] Crypto-sûr: {_value}\");",
         "    {{else}}",
         "        _value = new Random().Next(min, max);",
@@ -390,17 +382,16 @@
         "}"
       ],
       "meta": {
-        "docstring": "/// <summary>\n/// Random number generator. Entropie cellulaire ou standard.\n/// Mainient un état épigénétique de l'entropie.\n/// </summary>",
+        "docstring": "/// <summary>\n/// Random number generator. Entropie cellulaire ou standard.\n/// Maintient un état épigénétique de l'entropie.\n/// </summary>",
         "weight": 1.3,
         "expression_level": 0.9,
         "cell_phase": "G1"
       },
       "epigenetic_markers": ["entropy_pool", "rng_state"]
     },
-
     {
       "id": "network_stack",
-      "filename": "network_stack.prot",
+      "filename": "network_stack.cs",
       "extends": null,
       "description": "Pile réseau. Communication interprocessus, sockets, protocoles.",
       "template": [
@@ -431,10 +422,9 @@
       },
       "epigenetic_markers": ["socket_open", "tcp_established"]
     },
-
     {
       "id": "protocol_handler",
-      "filename": "protocol_handler.prot",
+      "filename": "protocol_handler.cs",
       "extends": "network_stack",
       "override": {
         "meta.expression_level": 0.6,
@@ -471,10 +461,9 @@
       },
       "epigenetic_markers": ["http_session", "ws_connected"]
     },
-
     {
       "id": "app_scheduler",
-      "filename": "app_scheduler.prot",
+      "filename": "app_scheduler.cs",
       "extends": null,
       "description": "Ordonnanceur d'applications. Gère le cycle de vie des processus.",
       "template": [
@@ -509,10 +498,9 @@
       },
       "epigenetic_markers": ["scheduler_state", "process_table"]
     },
-
     {
       "id": "event_loop",
-      "filename": "event_loop.prot",
+      "filename": "event_loop.cs",
       "extends": null,
       "description": "Boucle d'événements asynchrone. Polling, callbacks, timers.",
       "template": [
@@ -546,10 +534,9 @@
       },
       "epigenetic_markers": ["event_queue", "callback_registry"]
     },
-
     {
       "id": "memory_manager",
-      "filename": "memory_manager.prot",
+      "filename": "memory_manager.cs",
       "extends": null,
       "description": "Gestionnaire de mémoire. Allocation, libération, GC, fragmentation.",
       "template": [
@@ -587,10 +574,9 @@
       },
       "epigenetic_markers": ["heap_state", "gc_mark_sweep"]
     },
-
     {
       "id": "access_control",
-      "filename": "access_control.prot",
+      "filename": "access_control.cs",
       "extends": null,
       "description": "Contrôle d'accès. ACL, permissions, rôles, isolation.",
       "template": [
@@ -629,10 +615,9 @@
       },
       "epigenetic_markers": ["acl_cache", "role_assignment"]
     },
-
     {
       "id": "audit_logger",
-      "filename": "audit_logger.prot",
+      "filename": "audit_logger.cs",
       "extends": "access_control",
       "override": {
         "meta.expression_level": 0.5,
@@ -665,10 +650,9 @@
       },
       "epigenetic_markers": ["audit_trail", "breach_detected"]
     },
-
     {
       "id": "garbage_collector",
-      "filename": "garbage_collector.prot",
+      "filename": "garbage_collector.cs",
       "extends": null,
       "description": "Collecteur de déchets. Libération automatique des organelles orphelines.",
       "template": [
@@ -692,17 +676,16 @@
         "}"
       ],
       "meta": {
-        "docstring": "/// <summary>\n/// Garbage collector. Libération automatique des organelles.\n/// Mainient la propreté du métabolisme cellulaire.\n/// </summary>",
+        "docstring": "/// <summary>\n/// Garbage collector. Libération automatique des organelles.\n/// Maintient la propreté du métabolisme cellulaire.\n/// </summary>",
         "weight": 1.3,
         "expression_level": 0.6,
         "cell_phase": "G0_starvation"
       },
       "epigenetic_markers": ["gc_generation", "reachability_graph"]
     },
-
     {
       "id": "resource_monitor",
-      "filename": "resource_monitor.prot",
+      "filename": "resource_monitor.cs",
       "extends": "garbage_collector",
       "override": {
         "meta.expression_level": 0.4,
@@ -736,10 +719,9 @@
       },
       "epigenetic_markers": ["resource_metrics", "throttling_active"]
     },
-
     {
       "id": "strange_loop",
-      "filename": "strange_loop.prot",
+      "filename": "strange_loop.cs",
       "extends": null,
       "description": "Boucle étrange (Hofstadter). Auto-référence système.",
       "template": [
