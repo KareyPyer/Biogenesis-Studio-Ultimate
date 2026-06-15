@@ -1,0 +1,260 @@
+{
+  "schema_version": "3.1.0",
+  "project": "CryptoBio_Evolutionary_Obfuscator",
+  "description": "Protéome dédié à la génération évolutive de routines de chiffrement/déchiffrement de fichiers, intégrant obfuscation structurelle, S-Boxes dynamiques et anti-analyse statique.",
+  "global": {
+    "language": "csharp",
+    "indent_size": 4,
+    "state_var": "_cellularState",
+    "entropy_var": "_entropy",
+    "comment_prefix": "//",
+    "max_recursion_depth": 6,
+    "mutation_rate": 0.08,
+    "oscillation_period": 3,
+    "crypto_block_size": 16,
+    "crypto_key_size": 32,
+    "file_chunk_size": 4096,
+    "max_file_chunks": 1000
+  },
+  "operons": [
+    {
+      "id": "OP_CORE_CRYPTO",
+      "promoter_condition": "state_var > 4",
+      "description": "Active les opérations cryptographiques lourdes (S-Box, XOR massif).",
+      "genes": ["crypto_engine_init", "block_cipher_core"],
+      "repressor": null
+    },
+    {
+      "id": "OP_FILE_STREAM",
+      "promoter_condition": "state_var > 2",
+      "description": "Gère la lecture/écriture par blocs et le padding.",
+      "genes": ["file_encrypt_stream", "file_decrypt_stream"],
+      "repressor": null
+    },
+    {
+      "id": "OP_OBFUSCATION",
+      "promoter_condition": "true",
+      "description": "Toujours actif. Injecte du code mort, des fausses conditions et des mutations d'état pour complexifier l'AST.",
+      "genes": ["obfuscation_layer", "junk_code_injector"],
+      "repressor": null
+    },
+    {
+      "id": "OP_ANTI_DEBUG",
+      "promoter_condition": "state_var > 7",
+      "description": "Mécanismes de défense : vérification de temps d'exécution, corruption de clé simulée.",
+      "genes": ["anti_debug_check"],
+      "repressor": "OP_FILE_STREAM"
+    }
+  ],
+  "plasmids": [
+    {
+      "id": "PLM_DYNAMIC_SBOX",
+      "description": "Génération d'une S-Box pseudo-aléatoire basée sur l'état cellulaire et l'automate de Conway.",
+      "circular": true,
+      "copy_number": 1,
+      "sequence": [
+        "byte[] _sbox = new byte[256];",
+        "for (int i = 0; i < 256; i++) {",
+        "    _sbox[i] = (byte)({{expr: i ^ randint(0, 255) ^ (state_var % 17)}});",
+        "}"
+      ]
+    },
+    {
+      "id": "PLM_KEY_EXPANSION",
+      "description": "Dérivation de clé simplifiée avec bruit épigénétique.",
+      "circular": false,
+      "copy_number": 1,
+      "sequence": [
+        "byte[] _expandedKey = new byte[{{global:crypto_key_size}}];",
+        "for(int i=0; i<{{global:crypto_key_size}}; i++) {",
+        "    _expandedKey[i] = (byte)(baseKey[i % baseKey.Length] ^ {{expr: randint(1, 128)}} ^ _epigeneticMemory.Count);",
+        "}"
+      ]
+    },
+    {
+      "id": "PLM_FILE_CHUNKER",
+      "description": "Boucle de lecture/écriture par blocs de 4Ko.",
+      "circular": true,
+      "copy_number": 1,
+      "sequence": [
+        "using (var fsIn = new System.IO.FileStream(inputPath, System.IO.FileMode.Open))",
+        "using (var fsOut = new System.IO.FileStream(outputPath, System.IO.FileMode.Create)) {",
+        "    byte[] buffer = new byte[{{global:file_chunk_size}}];",
+        "    int bytesRead;",
+        "    while ((bytesRead = fsIn.Read(buffer, 0, buffer.Length)) > 0) {",
+        "        // Traitement du bloc ici",
+        "        fsOut.Write(buffer, 0, bytesRead);",
+        "        {{state_var}} = ({{state_var}} + 1) % 10;",
+        "    }",
+        "}"
+      ]
+    },
+    {
+      "id": "PLM_JUNK_CODE",
+      "description": "Code mort syntactiquement valide pour augmenter la complexité cyclomatique (favorisé par le fitness AST).",
+      "circular": false,
+      "copy_number": 5,
+      "sequence": [
+        "if ({{expr: randint(0, 100)}} > 95) {",
+        "    {{state_var}} = {{expr: state_var + randint(-5, 5)}};",
+        "    _organelles.Add(\"decoy_\" + {{expr: randint(1000, 9999)}});",
+        "}"
+      ]
+    }
+  ],
+  "global_transposons": [
+    {
+      "id": "TP_DEAD_CODE_INSERTION",
+      "description": "Insère aléatoirement du code inutile pour briser les motifs de reconnaissance des désassembleurs.",
+      "jump_prob": 0.15,
+      "effect": "Console.WriteLine(\"[TP] Injection de bruit de contrôle\"); {{plasmid:PLM_JUNK_CODE}}"
+    },
+    {
+      "id": "TP_KEY_NOISE",
+      "description": "Ajoute une variable factice liée à la clé pour induire en erreur l'analyse de flux de données.",
+      "jump_prob": 0.10,
+      "effect": "int _fakeKeyEntropy = {{expr: randint(0, 1000)}}; _expandedKey[0] = (byte)(_expandedKey[0] ^ (_fakeKeyEntropy % 256));"
+    },
+    {
+      "id": "TP_STATE_FLIP",
+      "description": "Inverse temporairement l'état cellulaire, modifiant le comportement des opérons en cours d'exécution.",
+      "jump_prob": 0.05,
+      "effect": "{{state_var}} = 10 - {{state_var}}; Console.WriteLine(\"[TP] Inversion d'état métabolique\");"
+    }
+  ],
+  "proteins": [
+    {
+      "id": "crypto_engine_init",
+      "filename": "crypto_init.cs",
+      "extends": null,
+      "description": "Initialisation du contexte cryptographique : clé, IV, S-Box.",
+      "template": [
+        "{{meta:docstring}}",
+        "public void InitializeCrypto(byte[] baseKey) {",
+        "    {{comment}} ── Initialisation du noyau cryptographique ──",
+        "    {{operon_check:OP_CORE_CRYPTO}}",
+        "    {{plasmid:PLM_KEY_EXPANSION}}",
+        "    {{plasmid:PLM_DYNAMIC_SBOX}}",
+        "    {{ca_state:B3/S23}}",
+        "    {{transposon:TP_KEY_NOISE}}",
+        "    Console.WriteLine($\"[CRYPTO] Moteur initialisé. État: {{{{state_var}}}}\");",
+        "}"
+      ],
+      "variables": {
+        "base_state": 5
+      },
+      "meta": {
+        "docstring": "/// <summary>\n/// Initialise les structures de données cryptographiques.\n/// Utilise un automate cellulaire pour initialiser l'entropie.\n/// </summary>",
+        "weight": 2.5,
+        "expression_level": 1.0,
+        "cell_phase": "G1"
+      },
+      "conway_rules": {
+        "B3/S23": [
+          "if (_entropy.Next(0, 9) == 3) {{state_var}}++;",
+          "if (_organelles.Count > 2 && _organelles.Count < 6) {{state_var}} = (int)({{state_var}} * 1.1);"
+        ]
+      },
+      "epigenetic_markers": ["crypto_initialized", "sbox_generated"]
+    },
+    {
+      "id": "file_encrypt_stream",
+      "filename": "file_encrypt.cs",
+      "extends": null,
+      "description": "Chiffrement de fichier par flux, avec injection d'obfuscation.",
+      "template": [
+        "{{meta:docstring}}",
+        "public void EncryptFile(string inputPath, string outputPath, byte[] key) {",
+        "    {{comment}} ── Flux de chiffrement de fichier ──",
+        "    {{operon_check:OP_FILE_STREAM}}",
+        "    this.InitializeCrypto(key);",
+        "    {{plasmid:PLM_FILE_CHUNKER}}",
+        "    // Début du traitement du bloc (injecté dans la boucle while du plasmide via substitution conceptuelle ou appel de méthode)",
+        "    {{comment}} Traitement cryptographique du bloc",
+        "    {{operon_check:OP_CORE_CRYPTO}}",
+        "    for (int i = 0; i < bytesRead; i++) {",
+        "        buffer[i] = _sbox[buffer[i] ^ _expandedKey[i % _expandedKey.Length]];",
+        "    }",
+        "    {{transposon:TP_DEAD_CODE_INSERTION}}",
+        "    {{plasmid:PLM_JUNK_CODE}}",
+        "    Console.WriteLine($\"[ENCRYPT] Bloc traité. Entropie: {{{{expr: _entropy.Next(0, 100)}}}}\");",
+        "}"
+      ],
+      "meta": {
+        "docstring": "/// <summary>\n/// Chiffre un fichier en flux. Intègre une S-Box dynamique.\n/// </summary>",
+        "weight": 3.0,
+        "expression_level": 0.9,
+        "cell_phase": "S"
+      },
+      "epigenetic_markers": ["file_encrypted", "stream_active"]
+    },
+    {
+      "id": "file_decrypt_stream",
+      "filename": "file_decrypt.cs",
+      "extends": "file_encrypt_stream",
+      "override": {
+        "meta.cell_phase": "G2",
+        "meta.weight": 2.8
+      },
+      "description": "Déchiffrement de fichier, incluant des vérifications anti-debug.",
+      "template": [
+        "{{meta:docstring}}",
+        "public void DecryptFile(string inputPath, string outputPath, byte[] key) {",
+        "    {{comment}} ── Flux de déchiffrement de fichier ──",
+        "    {{operon_check:OP_FILE_STREAM}}",
+        "    {{operon_check:OP_ANTI_DEBUG}}",
+        "    this.InitializeCrypto(key);",
+        "    {{plasmid:PLM_FILE_CHUNKER}}",
+        "    {{comment}} Traitement cryptographique inverse du bloc",
+        "    for (int i = 0; i < bytesRead; i++) {",
+        "        // Inversion simplifiée de la S-Box pour l'exemple",
+        "        byte temp = buffer[i];",
+        "        buffer[i] = (byte)(Array.IndexOf(_sbox, temp) ^ _expandedKey[i % _expandedKey.Length]);",
+        "    }",
+        "    {{transposon:TP_STATE_FLIP}}",
+        "    {{transposon:TP_DEAD_CODE_INSERTION}}",
+        "    Console.WriteLine($\"[DECRYPT] Bloc restauré. État: {{{{state_var}}}}\");",
+        "}"
+      ],
+      "meta": {
+        "docstring": "/// <summary>\n/// Déchiffre un fichier. Inclut des leurres anti-analyse.\n/// Hérite de la structure de file_encrypt_stream.\n/// </summary>",
+        "weight": 2.8,
+        "expression_level": 0.8,
+        "cell_phase": "G2"
+      },
+      "epigenetic_markers": ["file_decrypted", "anti_debug_armed"]
+    },
+    {
+      "id": "obfuscation_layer",
+      "filename": "obfuscation_core.cs",
+      "extends": null,
+      "description": "Couche méta qui enveloppe les appels pour créer des boucles étranges et du code mort.",
+      "template": [
+        "{{meta:docstring}}",
+        "public void ExecuteObfuscatedCryptoAction(string action, string path, byte[] key) {",
+        "    {{comment}} ── Point d'entrée obfusqué ──",
+        "    {{operon_check:OP_OBFUSCATION}}",
+        "    {{if: state_var > 10}}",
+        "        Console.WriteLine(\"[OBFUSCATION] Chemin d'exécution alternatif activé\");",
+        "        {{state_var}} = {{expr: state_var - 5}};",
+        "    {{elif: state_var < 2}}",
+        "        {{plasmid:PLM_JUNK_CODE}}",
+        "        {{plasmid:PLM_JUNK_CODE}}",
+        "    {{else}}",
+        "        {{comment}} Appel normal mais encapsulé",
+        "        if (action == \"encrypt\") this.EncryptFile(path, path + \".enc\", key);",
+        "        else if (action == \"decrypt\") this.DecryptFile(path, path + \".dec\", key);",
+        "    {{endif}}",
+        "    {{transposon:TP_DEAD_CODE_INSERTION}}",
+        "}"
+      ],
+      "meta": {
+        "docstring": "/// <summary>\n/// Point d'entrée unique qui disperse le flux de contrôle.\n/// Conçu pour maximiser la complexité cyclomatique détectée par l'AST.\n/// </summary>",
+        "weight": 2.0,
+        "expression_level": 1.2,
+        "cell_phase": "meta"
+      },
+      "epigenetic_markers": ["control_flow_flattened", "obfuscation_active"]
+    }
+  ]
+}
